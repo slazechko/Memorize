@@ -8,9 +8,8 @@
 
 import SwiftUI
 
-class EmojiMemoryGame { //this is the view model
-    
-    private var model: MemoryGame<String> = EmojiMemoryGame.createMemoryGame()
+class EmojiMemoryGame: ObservableObject { //this is the view model
+    @Published private var model: MemoryGame<String> = EmojiMemoryGame.createMemoryGame() //@Published > everytime this var changes, it calls the objectWillChange.send()
     
     static func createMemoryGame() -> MemoryGame<String> {
         let emojis: Array<String> = ["👻", "🎃", "🕷", "👹", "💀", "🍓", "🍆", "🌯", "🐕", "🎮", "⛳️", "👑", "👏"].shuffled()

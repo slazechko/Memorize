@@ -11,8 +11,19 @@ import Foundation
 struct MemoryGame<CardContent> { //This is the model
     var cards: Array<Card>
     
-    func choose(card: Card) {
+    mutating func choose(card: Card) { //all functions that modify self in a struct have to be "mutating"
         print("card chosen: \(card)")
+        let chosenIndex: Int = index(of: card)
+        cards[chosenIndex].isFaceUp = !cards[chosenIndex].isFaceUp
+    }
+    
+    func index(of inpCard: Card) -> Int {
+        for index in 0..<cards.count {
+            if cards[index].id == inpCard.id {
+                return index
+            }
+        }
+        return -1 //TODO: bogus return if index not found! 
     }
     
     init (numberOfPairsOfCards: Int, cardContentFactory: (Int) -> CardContent){
