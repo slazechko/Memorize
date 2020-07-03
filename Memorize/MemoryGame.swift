@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct MemoryGame<CardContent> { //This is the model (I think)
+struct MemoryGame<CardContent> { //This is the model
     var cards: Array<Card>
     
     func choose(card: Card) {
@@ -22,6 +22,7 @@ struct MemoryGame<CardContent> { //This is the model (I think)
             cards.append(Card(content: content, id: pairIndex*2))
             cards.append(Card(content: content, id: pairIndex*2+1))
         }
+        cards.shuffle()
     }
     
     struct Card:Identifiable {
