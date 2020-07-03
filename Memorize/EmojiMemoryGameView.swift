@@ -17,7 +17,6 @@ struct EmojiMemoryGameView: View {
                 CardView(card: card).onTapGesture {
                     self.viewModel.choose(card: card)
                 }
-                .font(self.viewModel.cards.count < 5 ? Font.largeTitle : Font.title)
                 .aspectRatio(2/3, contentMode: .fit)
             }
         }
