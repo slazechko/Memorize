@@ -13,7 +13,6 @@ import SwiftUI
 /// Main view.
 struct EmojiMemoryGameView: View {
     @ObservedObject var viewModel: EmojiMemoryGame //@ObservedObject the other side of @Published, this is what makes view update when the model changes
-    
     var body: some View { //my code will never call this, it is called by the system.
         Grid (viewModel.cards) { card in
                 CardView(card: card).onTapGesture {
@@ -22,7 +21,7 @@ struct EmojiMemoryGameView: View {
 //                .aspectRatio(2/3, contentMode: .fit)
                 .padding()
             }
-            .foregroundColor(Color.orange)
+        .foregroundColor(viewModel.theme.color)
     }
 }
 

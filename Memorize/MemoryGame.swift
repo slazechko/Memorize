@@ -7,16 +7,33 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct MemoryGame<CardContent> where CardContent: Equatable { //This is the model
     //MARK: - Properties
+    public var theme: Theme
     var cards: Array<Card>
+    
     struct Card:Identifiable {
         var isFaceUp: Bool = false
         var isMatched: Bool = false 
         var content: CardContent
         var id: Int
     }
+    struct Theme {
+        var name: String
+        var emojis: Array<String>
+        var color: Color?
+        var numPairs: Int
+        
+        init(name: String, emojis: Array<String>, color: Color, numPairs: Int? = nil) {
+            self.name = name
+            self.emojis = emojis
+            self.color = color
+            self.numPairs = numPairs ?? Int.random(in: 2..<emojis.count)
+        }
+    }
+
     var indexOfTheOneAndOnlyFaceUpCard: Int? {
         get {
             //if only one card is face up, return it's index. otherwise return nil
@@ -33,14 +50,15 @@ struct MemoryGame<CardContent> where CardContent: Equatable { //This is the mode
     
     //MARK: - Initializers
     
-    init (numberOfPairsOfCards: Int, cardContentFactory: (Int) -> CardContent){
-        cards = Array<Card>()
-        for pairIndex in 0..<numberOfPairsOfCards {
+    init (theme: Theme, cardContentFactory: (Int) -> CardContent){
+        self.theme = theme
+        self.cards = Array<Card>()
+        for pairIndex in 0..<theme.numPairs {
             let content = cardContentFactory(pairIndex)
-            cards.append(Card(content: content, id: pairIndex*2))
-            cards.append(Card(content: content, id: pairIndex*2+1))
+            self.cards.append(Card(content: content, id: pairIndex*2))
+            self.cards.append(Card(content: content, id: pairIndex*2+1))
         }
-        cards.shuffle()
+        self.cards.shuffle()
     }
     
     //MARK: - Functions
@@ -60,3 +78,6 @@ struct MemoryGame<CardContent> where CardContent: Equatable { //This is the mode
         }
     }
 }
+
+
+

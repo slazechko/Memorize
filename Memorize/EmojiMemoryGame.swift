@@ -10,17 +10,29 @@ import SwiftUI
 
 class EmojiMemoryGame: ObservableObject { //this is the view model
     @Published private var model: MemoryGame<String> = EmojiMemoryGame.createMemoryGame() //@Published > everytime this var changes, it calls the objectWillChange.send()
-    
-    static func createMemoryGame() -> MemoryGame<String> {
-        let emojis: Array<String> = ["👻", "🎃", "🕷", "👹", "💀", "🍓", "🍆", "🌯", "🐕", "🎮", "⛳️", "👑", "👏"].shuffled()
-        return MemoryGame<String>(numberOfPairsOfCards: Int.random(in: 2...5)) { pairIndex in emojis[pairIndex] }
-    }
-    
-    // MARK: - Access to the Model
-    
     var cards: Array<MemoryGame<String>.Card> {
         model.cards
     }
+    var theme: MemoryGame<String>.Theme {
+        model.theme
+    }
+    
+    
+    static func createMemoryGame() -> MemoryGame<String> {
+        let theme = getTheme()
+        return MemoryGame<String>(theme: theme) { pairIndex in theme.emojis[pairIndex] }
+    }
+    
+    // MARK: - Access to the Model
+    static func getTheme() -> MemoryGame<String>.Theme {
+        var arrayOfThemes = [MemoryGame<String>.Theme]()
+        arrayOfThemes.append(MemoryGame<String>.Theme(name: "halloween", emojis: ["👻", "🎃", "🕷", "👹", "💀",], color: Color.orange, numPairs: 5))
+        arrayOfThemes.append(MemoryGame<String>.Theme(name: "food", emojis: ["🍓", "🍆", "🌯","🌮","🍔","🌭"], color: Color.blue))
+        arrayOfThemes.append(MemoryGame<String>.Theme(name: "sports", emojis: ["🏓","🏈","⚾️","🏒","🥊","🏁"], color: Color.red))
+        return arrayOfThemes.randomElement()!
+    }
+
+
     
     // MARK: - Intent(s)
     //things the views would say to the ViewModel that they want to happen
@@ -28,5 +40,4 @@ class EmojiMemoryGame: ObservableObject { //this is the view model
     func choose(card: MemoryGame<String>.Card) {
         model.choose(card: card)
     }
-    
 }
