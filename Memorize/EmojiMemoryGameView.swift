@@ -8,6 +8,9 @@
 
 import SwiftUI
 
+//MARK: - Views
+
+/// Main view.
 struct EmojiMemoryGameView: View {
     @ObservedObject var viewModel: EmojiMemoryGame //@ObservedObject the other side of @Published, this is what makes view update when the model changes
     
@@ -26,6 +29,7 @@ struct EmojiMemoryGameView: View {
     }
 }
 
+/// Sub View for individual cards.
 struct CardView: View {
     var card:  MemoryGame<String>.Card
     
@@ -62,26 +66,7 @@ struct CardView: View {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//MARK: - Ignore (For Now)
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

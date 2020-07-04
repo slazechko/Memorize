@@ -9,7 +9,29 @@
 import Foundation
 
 struct MemoryGame<CardContent> { //This is the model
+    //MARK: - Properties
+    
     var cards: Array<Card>
+    struct Card:Identifiable {
+        var isFaceUp: Bool = true
+        var isMatched: Bool = false
+        var content: CardContent
+        var id: Int
+    }
+    
+    //MARK: - Initializers
+    
+    init (numberOfPairsOfCards: Int, cardContentFactory: (Int) -> CardContent){
+        cards = Array<Card>()
+        for pairIndex in 0..<numberOfPairsOfCards {
+            let content = cardContentFactory(pairIndex)
+            cards.append(Card(content: content, id: pairIndex*2))
+            cards.append(Card(content: content, id: pairIndex*2+1))
+        }
+        cards.shuffle()
+    }
+    
+    //MARK: - Functions
     
     mutating func choose(card: Card) { //all functions that modify self in a struct have to be "mutating"
         print("card chosen: \(card)")
@@ -24,22 +46,5 @@ struct MemoryGame<CardContent> { //This is the model
             }
         }
         return -1 //TODO: bogus return if index not found! 
-    }
-    
-    init (numberOfPairsOfCards: Int, cardContentFactory: (Int) -> CardContent){
-        cards = Array<Card>()
-        for pairIndex in 0..<numberOfPairsOfCards {
-            let content = cardContentFactory(pairIndex)
-            cards.append(Card(content: content, id: pairIndex*2))
-            cards.append(Card(content: content, id: pairIndex*2+1))
-        }
-        cards.shuffle()
-    }
-    
-    struct Card:Identifiable {
-        var isFaceUp: Bool = true
-        var isMatched: Bool = false
-        var content: CardContent
-        var id: Int
     }
 }
