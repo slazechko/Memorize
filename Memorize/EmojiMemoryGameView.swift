@@ -15,17 +15,14 @@ struct EmojiMemoryGameView: View {
     @ObservedObject var viewModel: EmojiMemoryGame //@ObservedObject the other side of @Published, this is what makes view update when the model changes
     
     var body: some View { //my code will never call this, it is called by the system.
-        HStack {
-            ForEach(viewModel.cards) { card in
+        Grid (viewModel.cards) { card in
                 CardView(card: card).onTapGesture {
                     self.viewModel.choose(card: card)
                 }
-                .aspectRatio(2/3, contentMode: .fit)
+//                .aspectRatio(2/3, contentMode: .fit)
+                .padding()
             }
-        }
-        .padding()
-        .foregroundColor(Color.orange)
-        
+            .foregroundColor(Color.orange)
     }
 }
 
@@ -46,7 +43,9 @@ struct CardView: View {
                 RoundedRectangle(cornerRadius: cornerRadius).stroke(lineWidth: edgeLineWidth)
                 Text(card.content)
             } else {
-                RoundedRectangle(cornerRadius: cornerRadius).fill()
+                if !card.isMatched {
+                     RoundedRectangle(cornerRadius: cornerRadius).fill()
+                }
             }
         }
         .font(Font.system(size: fontSize(for: size)))
