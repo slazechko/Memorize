@@ -9,10 +9,11 @@
 import Foundation
 import SwiftUI
 
-struct MemoryGame<CardContent> where CardContent: Equatable { //This is the model
+//This is the model
+struct MemoryGame<CardContent> where CardContent: Equatable {
     //MARK: - Properties
-    var cards: Array<Card>
-    var score: Int
+    private(set) var cards: Array<Card>
+    private(set) var score: Int
     
     struct Card:Identifiable {
         var isFaceUp: Bool = false
@@ -23,7 +24,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable { //This is the mode
         
     }
 
-    var indexOfTheOneAndOnlyFaceUpCard: Int? {
+    private var indexOfTheOneAndOnlyFaceUpCard: Int? {
         get {
             //if only one card is face up, return it's index. otherwise return nil
             cards.indices.filter { index in cards[index].isFaceUp }.only
@@ -52,7 +53,8 @@ struct MemoryGame<CardContent> where CardContent: Equatable { //This is the mode
     
     //MARK: - Functions
     
-    mutating func choose(card: Card) { //all functions that modify self in a struct have to be "mutating"
+    //all functions that modify self in a struct have to be "mutating"
+    mutating func choose(card: Card) {
 //        print("card chosen: \(card)")
         if let   chosenIndex = cards.firstIndex(matching: card), !cards[chosenIndex].isFaceUp, !cards[chosenIndex].isMatched {
             if let potentialMatchIndex = indexOfTheOneAndOnlyFaceUpCard { //we only get past this if there is one and only one card up.
@@ -74,6 +76,3 @@ struct MemoryGame<CardContent> where CardContent: Equatable { //This is the mode
         }
     }
 }
-
-
-

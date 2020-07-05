@@ -14,7 +14,8 @@ import SwiftUI
 struct EmojiMemoryGameView: View {
     @ObservedObject var viewModel: EmojiMemoryGame //@ObservedObject the other side of @Published, this is what makes view update when the model changes
 
-    var body: some View { //my code will never call this, it is called by the system.
+    //my code will never call this, it is called by the system.
+    var body: some View {
         VStack {
             Text(viewModel.theme.name)
             .padding()
@@ -22,11 +23,11 @@ struct EmojiMemoryGameView: View {
             Text("Score: \(viewModel.score)")
             .padding()
             Grid (viewModel.cards) { card in
-            CardView(card: card).onTapGesture {
-                self.viewModel.choose(card: card)
-            }
-//          .aspectRatio(2/3, contentMode: .fit)
-            .padding()
+                CardView(card: card).onTapGesture {
+                    self.viewModel.choose(card: card)
+                }
+//              .aspectRatio(2/3, contentMode: .fit)
+                .padding()
             }
             .foregroundColor(viewModel.theme.color)
             Button(action: {
@@ -39,8 +40,6 @@ struct EmojiMemoryGameView: View {
     }
 }
 
-
-
 /// Sub View for individual cards.
 struct CardView: View {
     var card:  MemoryGame<String>.Card
@@ -51,35 +50,23 @@ struct CardView: View {
         }
     }
     
-    func body(for size: CGSize) -> some View {
-        ZStack {
-            if card.isFaceUp {
-                RoundedRectangle(cornerRadius: cornerRadius).fill(Color.white)
-                RoundedRectangle(cornerRadius: cornerRadius).stroke(lineWidth: edgeLineWidth)
-                Text(card.content)
-            } else {
-                if !card.isMatched {
-                     RoundedRectangle(cornerRadius: cornerRadius).fill()
-                }
+    @ViewBuilder
+    private func body(for size: CGSize) -> some View {
+        if card.isFaceUp || !card.isMatched {
+            ZStack {
+                Pie(startAngle: Angle.degrees(-90), endAngle: Angle.degrees(-330), clockwise: true).padding(5).opacity(0.5)
+                Text(card.content).font(Font.system(size: fontSize(for: size)))
             }
+            .cardify(isFaceUp: card.isFaceUp)
         }
-        .font(Font.system(size: fontSize(for: size)))
     }
+}
     
-    // MARK: - Drawing Constants
-    
-    let cornerRadius: CGFloat = 10.0
-    let edgeLineWidth: CGFloat = 3
-    func fontSize(for size: CGSize) -> CGFloat {
-        min(size.width, size.height) * 0.75
-    }
-    
+// MARK: - Drawing Constants
+private func fontSize(for size: CGSize) -> CGFloat {
+    min(size.width, size.height) * 0.6
 }
 
-
-
-
-//MARK: - Ignore (For Now)
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

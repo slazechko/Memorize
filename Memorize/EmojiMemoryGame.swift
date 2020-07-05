@@ -9,7 +9,8 @@
 import SwiftUI
 import UIKit
 
-class EmojiMemoryGame: ObservableObject { //this is the view model
+//this is the view model
+class EmojiMemoryGame: ObservableObject {
     @Published private var model: MemoryGame<String> //@Published > everytime this var changes, it calls the objectWillChange.send()
     var theme: Theme
     var cards: Array<MemoryGame<String>.Card> {
