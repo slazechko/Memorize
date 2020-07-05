@@ -13,17 +13,33 @@ import SwiftUI
 /// Main view.
 struct EmojiMemoryGameView: View {
     @ObservedObject var viewModel: EmojiMemoryGame //@ObservedObject the other side of @Published, this is what makes view update when the model changes
+
     var body: some View { //my code will never call this, it is called by the system.
-        Grid (viewModel.cards) { card in
-                CardView(card: card).onTapGesture {
-                    self.viewModel.choose(card: card)
-                }
-//                .aspectRatio(2/3, contentMode: .fit)
-                .padding()
+        VStack {
+            Text(viewModel.theme.name)
+            .padding()
+            .font(.title)
+            Text("Score: \(viewModel.score)")
+            .padding()
+            Grid (viewModel.cards) { card in
+            CardView(card: card).onTapGesture {
+                self.viewModel.choose(card: card)
             }
-        .foregroundColor(viewModel.theme.color)
+//          .aspectRatio(2/3, contentMode: .fit)
+            .padding()
+            }
+            .foregroundColor(viewModel.theme.color)
+            Button(action: {
+                self.viewModel.startNewGame()
+            }) {
+                Text("New Game")
+            }
+            .padding()
+        }
     }
 }
+
+
 
 /// Sub View for individual cards.
 struct CardView: View {
@@ -59,7 +75,6 @@ struct CardView: View {
     }
     
 }
-
 
 
 

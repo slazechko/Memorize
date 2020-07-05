@@ -11,27 +11,16 @@ import SwiftUI
 
 struct MemoryGame<CardContent> where CardContent: Equatable { //This is the model
     //MARK: - Properties
-    public var theme: Theme
     var cards: Array<Card>
+    var score: Int
     
     struct Card:Identifiable {
         var isFaceUp: Bool = false
         var isMatched: Bool = false 
         var content: CardContent
+        var previouslySeen: Bool = false
         var id: Int
-    }
-    struct Theme {
-        var name: String
-        var emojis: Array<String>
-        var color: Color?
-        var numPairs: Int
         
-        init(name: String, emojis: Array<String>, color: Color, numPairs: Int? = nil) {
-            self.name = name
-            self.emojis = emojis
-            self.color = color
-            self.numPairs = numPairs ?? Int.random(in: 2..<emojis.count)
-        }
     }
 
     var indexOfTheOneAndOnlyFaceUpCard: Int? {
@@ -50,10 +39,10 @@ struct MemoryGame<CardContent> where CardContent: Equatable { //This is the mode
     
     //MARK: - Initializers
     
-    init (theme: Theme, cardContentFactory: (Int) -> CardContent){
-        self.theme = theme
+    init (numPairs: Int, cardContentFactory: (Int) -> CardContent){
+        self.score = 0
         self.cards = Array<Card>()
-        for pairIndex in 0..<theme.numPairs {
+        for pairIndex in 0..<numPairs {
             let content = cardContentFactory(pairIndex)
             self.cards.append(Card(content: content, id: pairIndex*2))
             self.cards.append(Card(content: content, id: pairIndex*2+1))
@@ -64,12 +53,19 @@ struct MemoryGame<CardContent> where CardContent: Equatable { //This is the mode
     //MARK: - Functions
     
     mutating func choose(card: Card) { //all functions that modify self in a struct have to be "mutating"
-        print("card chosen: \(card)")
-        if let chosenIndex = cards.firstIndex(matching: card), !cards[chosenIndex].isFaceUp, !cards[chosenIndex].isMatched {
-            if let potentialMatchIndex = indexOfTheOneAndOnlyFaceUpCard {
-                if cards[chosenIndex].content == cards[potentialMatchIndex].content {
+//        print("card chosen: \(card)")
+        if let   chosenIndex = cards.firstIndex(matching: card), !cards[chosenIndex].isFaceUp, !cards[chosenIndex].isMatched {
+            if let potentialMatchIndex = indexOfTheOneAndOnlyFaceUpCard { //we only get past this if there is one and only one card up.
+                if cards[chosenIndex].content == cards[potentialMatchIndex].content { //if we have a match
                     cards[chosenIndex].isMatched = true
                     cards[potentialMatchIndex].isMatched = true
+                    self.score = self.score + 2 //plus 2 points for a match
+                } else {
+                    let penalty1: Int = cards[chosenIndex].previouslySeen ? 1 : 0
+                    let penalty2: Int = cards[potentialMatchIndex].previouslySeen ? 1 : 0
+                    score = score - penalty1 - penalty2
+                    if (!cards[chosenIndex].previouslySeen) { cards[chosenIndex].previouslySeen = true }
+                    if (!cards[potentialMatchIndex].previouslySeen) { cards[potentialMatchIndex].previouslySeen = true }
                 }
                 self.cards[chosenIndex].isFaceUp = true
             } else {
